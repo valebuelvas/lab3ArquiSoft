@@ -1,0 +1,29 @@
+services:
+  lab3v:
+    image: lab3v
+    container_name: lab3v_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: psvale071947
+      POSTGRES_DB: lab3v
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  # Define el volumen nombrado para que Docker Compose sepa gestionarlo
+  postgres_data:

@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------
+# Deployment: Despliega el contenedor de tu aplicación Spring Boot
+# ----------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab3v-deployment
+  labels:
+    app: lab3v
+spec:
+  selector:
+    matchLabels:
+      app: lab3v
+  replicas: 2 # Usando las 2 réplicas que se ven en la configuración de tu profesor
+  template:
+    metadata:
+      labels:
+        app: lab3v
+    spec:
+      containers:
+        - name: lab3v-container
+          # ¡IMPORTANTE! Asume que ya subiste esta imagen a Docker Hub
+          image: lab3v-app:latest 
+          ports:
+            - containerPort: 8080
+          # Aquí sobrescribimos las variables de entorno de Spring para la conexión
+          env:
+            - name: SPRING_DATASOURCE_URL
+              # El host es el nombre del Service de PostgreSQL
+              value: jdbc:postgresql://postgresql-service:5432/lab3v
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: psvale071947
+---
+# ----------------------------------------------------------------------
+# Service: Expone la aplicación al exterior del cluster
+# ----------------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab3v-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: lab3v
+  type: LoadBalancer # El tipo de Service que usó tu profesor

@@ -1,0 +1,63 @@
+# ----------------------------------------------------------------------
+# PersistentVolumeClaim (PVC): Define el almacenamiento persistente
+# ----------------------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# ----------------------------------------------------------------------
+# Deployment: Despliega el contenedor de PostgreSQL
+# ----------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-deployment
+  labels:
+    app: postgresql
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:16-alpine # Imagen de tu Compose
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config # Usa las credenciales del ConfigMap
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+---
+# ----------------------------------------------------------------------
+# Service: Da una IP estable a la DB para que la app se conecte
+# ----------------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service # HOST que usará Spring Boot (jdbc:postgresql://postgresql-service:5432)
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgresql
+  type: ClusterIP

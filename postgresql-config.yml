@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  # Base de datos y Usuario (se leen en el Deployment de PostgreSQL)
+  POSTGRES_DB: "lab3v"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "psvale071947"
