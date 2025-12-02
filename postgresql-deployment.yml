@@ -33,12 +33,27 @@ spec:
     spec:
       containers:
         - name: postgresql
-          image: postgres:16-alpine # Imagen de tu Compose
+          image: postgres:16-alpine 
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: postgres-config # Usa las credenciales del ConfigMap
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-storage

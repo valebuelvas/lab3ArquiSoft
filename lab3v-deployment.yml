@@ -20,7 +20,7 @@ spec:
       containers:
         - name: lab3v-container
           # ¡IMPORTANTE! Asume que ya subiste esta imagen a Docker Hub
-          image: lab3v-app:latest 
+          image: vbuelvas/lab3v-app:latest 
           ports:
             - containerPort: 8080
           # Aquí sobrescribimos las variables de entorno de Spring para la conexión
@@ -46,4 +46,4 @@ spec:
       targetPort: 8080
   selector:
     app: lab3v
-  type: LoadBalancer # El tipo de Service que usó tu profesor
+  type: LoadBalancer
