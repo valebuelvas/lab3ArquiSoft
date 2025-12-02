@@ -11,7 +11,7 @@ spec:
   selector:
     matchLabels:
       app: lab3v
-  replicas: 2 # Usando las 2 réplicas que se ven en la configuración de tu profesor
+  replicas: 3
   template:
     metadata:
       labels:
